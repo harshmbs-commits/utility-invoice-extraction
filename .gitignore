@@ -1,0 +1,19 @@
+# Secrets -- never commit API keys
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+
+# Generated output -- invoices.csv IS committed (it's a required
+# deliverable), but other stray output files are excluded.
+data/output/test_*.csv
+
+# Unredacted original invoices -- redacted copies only get committed,
+# per our redaction plan. Keep raw originals local until redacted.
+data/sample_invoices/*_original.*

@@ -1,0 +1,19 @@
+# Core dependencies -- we'll pin exact versions as we install them,
+# same discipline as your Supply Chain RAG project (pandas==2.2.2 etc.)
+
+# PDF -> image conversion
+pymupdf
+Pillow
+
+# LLM API clients
+google-generativeai
+groq
+
+# Environment variable loading
+python-dotenv
+
+# CSV / data handling
+pandas
+
+# Testing
+pytest
