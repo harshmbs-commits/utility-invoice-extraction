@@ -13,7 +13,7 @@ I used 4 real invoices, in 4 languages, covering electricity, gas, water, and he
 - Iberdrola electricity bill (Spanish) — a published sample invoice
 - Indraprastha Gas bill (Hindi/English) — my own bill
 - Aigües Manresa water bill (Catalan) — a published sample invoice
-- BRUNATA heating/hot water bill (German) — redacted before publishing
+- BRUNATA heating/hot water bill (German) — a published sample invoice
 
 Even with permission, I redacted anything with real personal info before pushing to GitHub. No reason to leave someone's name and address sitting in a public repo.
 
