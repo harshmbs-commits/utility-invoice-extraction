@@ -6,7 +6,7 @@ pymupdf
 Pillow
 
 # LLM API clients
-google-generativeai
+google-genai
 groq
 
 # Environment variable loading
