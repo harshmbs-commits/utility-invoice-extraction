@@ -1,3 +1,34 @@
+# Utility Invoice Extraction Pipeline
+
+**Live demo:** https://utilityinvoiceextraction.streamlit.app
+
+Extracts structured data (vendor, dates, usage, payable amount) from real-world
+multilingual utility invoices (electricity, gas, water, heating) using a
+vision-capable LLM, and outputs a clean CSV.
+
+## Sample Data
+
+Four real utility invoices, sourced from four different countries/languages:
+
+| File | Utility | Language | Notes |
+|---|---|---|---|
+| `Electricity Bill spanish.jpg` | Electricity | Spanish | Iberdrola (Spain); usage shown only as a chart, no explicit total |
+| `Gas Invoice.pdf` | Gas | Hindi + English | Indraprastha Gas (India); estimated bill, no explicit usage total |
+| `factura_am_bo.png` | Water | Catalan | Aigües Manresa (Spain); quarterly billing, self-contradictory dates on the source document |
+| `nebenkosten-...webp` | Heating + Hot Water | German | BRUNATA (Germany); two usage categories in one invoice |
+
+## Architecture
+data/sample_invoices/ (PDF/JPG/PNG/WEBP)
+|
+src/ingestion/converter.py -- standardizes any input into PIL images
+|
+src/extraction/llm_client.py -- Gemini 3 Flash Preview (primary)
+-> Groq Qwen 3.6 27B (fallback)
+|
+src/validation/rules.py -- rule-based sanity checks (no LLM)
+|
+src/output/csv_writer.py -- writes data/output/invoices.csv
+
 **Orchestration:** `src/pipeline.py`, run via `main.py`. One failing invoice
 does not stop the batch -- it's recorded as an error row instead.
 
@@ -6,7 +37,7 @@ does not stop the batch -- it's recorded as an error row instead.
 The assignment's CSV spec is intentionally ambiguous on a couple of fields.
 Here's exactly what this pipeline means by each:
 
-- **usage_amount**: the physical *consumption* quantity for the billing
+- **usage_quantity**: the physical *consumption* quantity for the billing
   period (e.g. kWh, m³, SCM). This is NOT a monetary value. Only populated
   if the invoice states it as a single explicit number -- never calculated,
   averaged, or estimated from a chart or trend description.
@@ -112,3 +143,19 @@ format or language:
 
 Both required layers were tested against a real non-utility document (a
 telecom/broadband bill), not just a hypothetical:
+is_out_of_scope: True
+needs_review: True
+validation_flags: ['Document flagged as out of scope (not a utility invoice).']
+notes: The document is a telecommunications bill for WiFi and TV services,
+which falls outside the scope of traditional utilities (electricity, gas,
+water, heating). Usage quantity is not explicitly stated as a single
+consumption figure.
+
+This confirms both the prompt-level instruction (model correctly
+classifies and explains why a document is out of scope) and the
+validation-layer safety net (flags it for review rather than silently
+including it) work correctly in practice.
+
+## Assumptions
+See CASE_STUDY.md for the full list of assumptions and trade-off decisions
+made during this build.
